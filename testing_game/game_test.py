@@ -1,8 +1,8 @@
-import weapons
+from weapons import (Dagger, RustySword)
 
 def play():
     print("Welcome to Dungeon Trek!")
-    inventory = [weapons.Dagger(), "gold", "bread"]
+    inventory = [Dagger(), "gold", "bread"]
     while True:
         action_input = get_player_command()
         if action_input in ['n', 'N', 'north']:
