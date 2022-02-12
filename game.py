@@ -22,7 +22,7 @@ class Crossbow(Weapon):
 
 def play():
     print("Welcome to Dungeon Trek!")
-    inventory = [Dagger(), "gold", "bread"]
+    inventory = [Dagger(), "Gold", "bread"]
     while True:
         action_input = get_player_command()
         if action_input in ['n', 'N', 'north']:
