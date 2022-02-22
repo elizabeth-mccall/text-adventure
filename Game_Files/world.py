@@ -58,7 +58,7 @@ class EnemyTile(MapTile):
     def modify_player(self, player):
         if self.enemy.is_alive():
             player.hp = player.hp - self.enemy.damage
-            print("{} does {} damage. You have {} HP remaining.".format(self.enemy.name, self.enemy.damage, player.hp))
+            print("The {} does {} damage. You have {} HP remaining.".format(self.enemy.name, self.enemy.damage, player.hp))
 
         
 world_map = [

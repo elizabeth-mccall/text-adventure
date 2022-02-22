@@ -39,12 +39,12 @@ class Player:
         best_weapon = self.most_powerful_weapon()
         room = world.tile_at(self.x, self.y)
         enemy = room.enemy
-        print("You use {} against {}!".format(best_weapon.name, enemy.name))
+        print("You use your {} against the {}! It deals {} damage.".format(best_weapon.name, enemy.name, best_weapon.damage))
         enemy.hp -= best_weapon.damage
         if not enemy.is_alive():
-            print("You killed {}!".format(enemy.name))
+            print("You killed the {}!".format(enemy.name))
         else:
-            print("{}'s HP is {}.".format(enemy.name, enemy.hp))
+            print("The {}'s HP is {}.".format(enemy.name, enemy.hp))
     def heal(self):
         consumables = [item for item in self.inventory if isinstance(item, items.Consumable)]
         if not consumables:
