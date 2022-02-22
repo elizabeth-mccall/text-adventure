@@ -4,8 +4,8 @@ import world
 class Player:
     def __init__(self):
         self.inventory = [items.Dagger(), items.RustySword(), items.CrustyBread()]
-        self.x = 1
-        self.y = 2
+        self.x = world.start_tile_location[0]
+        self.y = world.start_tile_location[1]
         self.hp = 100
         self.gold = 5
     def move(self, dx, dy):

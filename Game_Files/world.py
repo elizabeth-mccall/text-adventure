@@ -130,11 +130,20 @@ class FindGoldTile(MapTile):
 
 #Creates a "Domain Specific Language" (DSL) for the world map. The DSL is initially just a string, and code needs to be written to let Python "understand"/parse it
 world_dsl = '''
-|  |VT|  |
-|  |EN|  |
-|EN|ST|  |
-|  |EN|  |
+|EN|EN|VT|EN|EN|
+|EN|  |  |  |EN|
+|EN|FG|EN|  |TT|
+|TT|  |ST|FG|EN|
+|FG|  |EN|  |FG|
 '''
+
+#Matches tile names in DSL to MapTile types
+tile_type_dict = {"VT": VictoryTile,
+                  "EN": EnemyTile,
+                  "ST": StartTile,
+                  "FG": FindGoldTile,
+                  "TT": TraderTile,
+                  "  ": None}
 
 #Checks whether the DSL is "valid" (i.e., was it written correctly). Returning False will raise an error later
 def is_dsl_valid(dsl):
@@ -155,14 +164,10 @@ def is_dsl_valid(dsl):
         if count != pipe_counts[0]:
             return False
     return True
-
-#Matches tile names in DSL to MapTile types
-tile_type_dict = {"VT": VictoryTile,
-                  "EN": EnemyTile,
-                  "ST": StartTile,
-                  "  ": None}
         
 world_map = []
+
+start_tile_location = None
 
 #Gives Python rules for understanding the DSL
 def parse_world_dsl():
@@ -184,6 +189,9 @@ def parse_world_dsl():
         for x, dsl_cell in enumerate(dsl_cells):
             #replaces cells with appropriate MapTile objects & pass in x-y coordinates
             tile_type = tile_type_dict[dsl_cell]
+            if tile_type == StartTile:
+                global start_tile_location
+                start_tile_location = x, y
             row.append(tile_type(x, y) if tile_type else None)
         #adds row to world map - now world map is a list of lists, made out of MapTiles & None types
         world_map.append(row)
@@ -195,4 +203,3 @@ def tile_at(x, y):
         return world_map[y][x]
     except IndexError:
         return None
-
