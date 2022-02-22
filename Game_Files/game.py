@@ -42,6 +42,7 @@ def choose_action(room, player):
  
 def play():
     print("Welcome to Dungeon Trek!")
+    world.parse_world_dsl()
     player = Player()
     while True:
         room = world.tile_at(player.x, player.y)
