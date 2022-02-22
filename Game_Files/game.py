@@ -1,18 +1,21 @@
 from player import Player
+import world
 
 def play():
     print("Welcome to Dungeon Trek!")
     player = Player()
     while True:
+        room = world.tile_at(player.x, player.y)
+        print(room.intro_text())
         action_input = get_player_command()
         if action_input in ['n', 'N', 'north']:
-            print("Go North!")
+            player.move_north()
         elif action_input in ['s', 'S', 'south']:
-            print("Go South!")
+            player.move_south()
         elif action_input in ['e', 'E', 'east']:
-            print("Go East!")
+            player.move_east()
         elif action_input in ['w', 'W', 'west']:
-            print("Go West!")
+            player.move_west()
         elif action_input in ['i', 'I', 'inventory']:
             player.print_inventory()
         else:
