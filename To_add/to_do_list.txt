@@ -7,6 +7,16 @@ To do:
 2. Re-do how finding gold works.
     -- Not tied to map tile, if possible. 
 
-3. Add personal information for player
+3. Add customizable player details
     -- Player name
     -- Player pronouns
+
+4. Add more NPCs
+    -- NPCs can give quests
+
+5. Enemies/combat
+    -- Add loot to enemies after they die 
+    -- Add armor
+
+6. ADD ITEMS
+    -- "take" and "drop" actions !! 
