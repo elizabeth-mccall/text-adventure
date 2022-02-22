@@ -1,28 +1,8 @@
-class Weapon:
-    def __str__(self):
-        return self.name
-
-class Dagger(Weapon):
-    def __init__(self):
-        self.name = "Dagger"
-        self.description = "A small dagger with some rust." 
-        self.damage = 10
-
-class RustySword(Weapon):
-    def __init__(self):
-        self.name = "Sword"
-        self.description = "This sword is showing its age, but it still has some fight in it."
-        self.damage = 20
-
-class Crossbow(Weapon):
-    def __init__(self):
-        self.name = "Crossbow"
-        self.description = "This crossbow can shoot quite a distance."
-        self.damage = 20
+from player import Player
 
 def play():
     print("Welcome to Dungeon Trek!")
-    inventory = [Dagger(), "Gold", "Bread"]
+    player = Player()
     while True:
         action_input = get_player_command()
         if action_input in ['n', 'N', 'north']:
@@ -34,13 +14,7 @@ def play():
         elif action_input in ['w', 'W', 'west']:
             print("Go West!")
         elif action_input in ['i', 'I', 'inventory']:
-            print("Inventory:")
-            for item in inventory:
-                print('* ' + (str(item)))
-        elif action_input in ['li', 'long inventory']:
-            print("Inventory:")
-            for item in inventory:
-                print('* ' + (str(item)))
+            player.print_inventory()
         else:
             print("Invalid action!")
 
