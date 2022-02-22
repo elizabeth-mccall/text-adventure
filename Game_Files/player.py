@@ -3,10 +3,11 @@ import world
 
 class Player:
     def __init__(self):
-        self.inventory = [items.Dagger(), items.RustySword(), 'Gold (5)', items.CrustyBread()]
+        self.inventory = [items.Dagger(), items.RustySword(), items.CrustyBread()]
         self.x = 1
         self.y = 2
         self.hp = 100
+        self.gold = 5
     def move(self, dx, dy):
         self.x += dx
         self.y += dy
@@ -19,11 +20,14 @@ class Player:
     def move_west(self):
         self.move(dx = -1, dy = 0)
     def print_inventory(self):
-        print("Inventory:")
-        for item in self.inventory: 
-            print('*', str(item))
         best_weapon = self.most_powerful_weapon()
-        print("Your best weapon is your {}.".format(best_weapon))
+        print("Inventory:")
+        for item in self.inventory:
+            if item ==  best_weapon:
+                print('*', str(item), '(best weapon)')
+            else:
+                print('*', str(item))
+        print("* Gold: {}".format(self.gold))
     def most_powerful_weapon(self): 
         max_damage = 0
         best_weapon = None
@@ -64,3 +68,6 @@ class Player:
                 valid = True
             except(ValueError, IndexError):
                 print("Invalid choice, try again.")
+    def trade(self):
+        room = world.tile_at(self.x, self.y)
+        room.check_if_trade(self)

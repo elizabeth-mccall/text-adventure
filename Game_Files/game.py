@@ -9,6 +9,8 @@ def get_available_actions(room, player):
     print("Choose an action: ")
     if player.inventory:
         action_adder(actions, 'i', player.print_inventory, "Print inventory")
+    if isinstance(room, world.TraderTile):
+        action_adder(actions, 't', player.trade, "Trade")
     if isinstance(room, world.EnemyTile) and room.enemy.is_alive():
         action_adder(actions, 'a', player.attack, "Attack")
     else:
