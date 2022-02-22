@@ -33,6 +33,8 @@ class VictoryTile(MapTile):
         ... it grows closer as you get closer! It's sunlgiht! 
         
         Victory is yours!'''
+    def modify_player(self, player):
+        player.victory = True
 
 class EnemyTile(MapTile):
     def __init__(self, x, y):
