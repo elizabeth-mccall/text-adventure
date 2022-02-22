@@ -7,6 +7,7 @@ def play():
     while True:
         room = world.tile_at(player.x, player.y)
         print(room.intro_text())
+        room.modify_player(player)
         action_input = get_player_command()
         if action_input in ['n', 'N', 'north']:
             player.move_north()
@@ -18,6 +19,10 @@ def play():
             player.move_west()
         elif action_input in ['i', 'I', 'inventory']:
             player.print_inventory()
+        elif action_input in ['a', 'A', 'attack']:
+            player.attack()
+        elif action_input in ['h', 'H', 'heal']:
+            player.heal()
         else:
             print("Invalid action!")
 

@@ -21,3 +21,19 @@ class Crossbow(Weapon):
         self.name = "Crossbow"
         self.description = "This crossbow can shoot quite a distance."
         self.damage = 20
+
+class Consumable:
+    def __init__(self):
+        raise NotImplementedError("Don't create raw Consumable objects!")
+    def __str__(self):
+        return "{} (+{} HP)".format(self.name, self.healing_value)
+
+class CrustyBread(Consumable):
+    def __init__(self):
+        self.name = "Crusty Bread"
+        self.healing_value = 10
+
+class Potion(Consumable):
+    def __init__(self):
+        self.name = "Potion"
+        self.healing_value = 50
