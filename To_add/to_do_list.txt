@@ -4,6 +4,9 @@ To do:
     -- No being told every turn what actions are available. Make some sort of command to list available actions. 
     -- Longer list of action commands (i, I --> i, I, inventory)
 
-2. Add personal information for player
+2. Re-do how finding gold works.
+    -- Not tied to map tile, if possible. 
+
+3. Add personal information for player
     -- Player name
     -- Player pronouns
