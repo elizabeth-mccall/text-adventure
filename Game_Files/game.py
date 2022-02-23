@@ -1,4 +1,3 @@
-from ast import Or
 from collections import OrderedDict
 
 from player import Player
