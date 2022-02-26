@@ -3,10 +3,11 @@ class Room():
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.visited = False
     def description(self):
         raise NotImplementedError("Make a subclass first!")
-    def modify_player(self, player):
-        pass
+    def mark_visited(self):
+        self.visited = True
 
 #Starting room
 class StartingRoom(Room):
