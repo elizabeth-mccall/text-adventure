@@ -3,7 +3,7 @@ import random
 import enemies
 import npc
 
-class MapTile:
+class Room:
     def __init__(self, x, y):
         self.x = x 
         self.y = y
@@ -13,20 +13,20 @@ class MapTile:
         pass
 
 #To do later: change the text 
-class StartTile(MapTile):
+class StartTile(Room):
     def intro_text(self):
         return '''
         You find yourself in a case with a flickering torch on the wall. 
         You can make out four paths, each equally as dark and foreboding.
         '''
 
-class BoringTile(MapTile):
+class BoringTile(Room):
     def intro_text(self):
         return '''
         This is a very boring part of the cave.
         '''
 
-class VictoryTile(MapTile):
+class VictoryTile(Room):
     def intro_text(self):
         return '''
         You see a bright light in the distance...
@@ -36,7 +36,7 @@ class VictoryTile(MapTile):
     def modify_player(self, player):
         player.victory = True
 
-class EnemyTile(MapTile):
+class EnemyTile(Room):
     def __init__(self, x, y):
         r = random.random()
         if r < 0.5:
@@ -64,7 +64,7 @@ class EnemyTile(MapTile):
             player.hp = player.hp - self.enemy.damage
             print("The {} does {} damage. You have {} HP remaining.".format(self.enemy.name, self.enemy.damage, player.hp))
 
-class TraderTile(MapTile):
+class TraderTile(Room):
     def __init__(self, x, y):
         self.trader = npc.Trader()
         super().__init__(x, y)
@@ -110,7 +110,7 @@ class TraderTile(MapTile):
         A cloaked figure squats in the corner clinking his gold coins together. He looks willing to trade.
         '''
 
-class FindGoldTile(MapTile):
+class FindGoldTile(Room):
     def __init__(self, x, y):
         self.gold = random.randint(1, 50)
         self.gold_claimed = False
@@ -139,7 +139,7 @@ world_dsl = '''
 |FG|  |EN|  |FG|
 '''
 
-#Matches tile names in DSL to MapTile types
+#Matches tile names in DSL to Room types
 tile_type_dict = {"VT": VictoryTile,
                   "EN": EnemyTile,
                   "ST": StartTile,
@@ -189,13 +189,13 @@ def parse_world_dsl():
         dsl_cells = [c for c in dsl_cells if c]
         #iterates over each cell in the row
         for x, dsl_cell in enumerate(dsl_cells):
-            #replaces cells with appropriate MapTile objects & pass in x-y coordinates
+            #replaces cells with appropriate Room objects & pass in x-y coordinates
             tile_type = tile_type_dict[dsl_cell]
             if tile_type == StartTile:
                 global start_tile_location
                 start_tile_location = x, y
             row.append(tile_type(x, y) if tile_type else None)
-        #adds row to world map - now world map is a list of lists, made out of MapTiles & None types
+        #adds row to world map - now world map is a list of lists, made out of Rooms & None types
         world_map.append(row)
 
 def tile_at(x, y):
