@@ -1,0 +1,64 @@
+What I want in a game
+
+Game start>>> 
+
+You awake in a cold, damp chamber. You have nothing. How did you get here? 
+
+Damp Cell
+The floors of this dark cell pool with dirty water. A tiny window in the wall lets in a sliver of light. A {open/closed} iron door leads north. 
+On the ground is a bedroll. 
+
+>n
+The door is locked.
+
+>l
+The floors of this dark cell pool with dirty water. A tiny window in the wall lets in a sliver of light. A {open/closed} iron door leads north. 
+On the ground is a bedroll. 
+
+>w
+You can't go that way. 
+
+>e
+You can't go that way. 
+
+>s
+You can't go that way. 
+
+>x bedroll
+A thin, damp bedroll. Surely it can't be much better to sleep on than the ground. 
+You see something poking out from beneath it. {only if the bedroll has not been taken}
+
+>take bedroll
+Taken.
+As you move the bedroll, you reveal a glistening key on the ground. 
+
+>take key
+Taken.
+
+>x key
+A shiny brass key. 
+
+>i 
+You are carrying:
+    a bedroll
+    a shiny brass key
+
+>open door
+You use the key to unlock the door. 
+
+>n
+Prison Hallway
+You are in a dimly-lit hallway lined with empty cells. The hallway leads north. 
+
+>x cells 
+The cells are all empty. Where is everyone?
+
+>go south 
+Damp Cell
+
+>go north 
+Prison Hallway
+
+>north
+Entryway
+You are in the prison's entryway. A guards table strewn with dice and playing cards sits in the corner. The guards' barrack is to the east. The prison exit leads north. 
