@@ -19,8 +19,6 @@ Enter "q" to quit. Enter "h" for help.
     room.mark_visited()
     while True:
         room = world.tile_at(player.x, player.y)
-        old_x = player.x
-        old_y = player.y
         print("For debugging: Your current location is {} (coordinates {}, {}).".format(room, player.x, player.y))
         player_input = (input(">>>")).lower()
         if player_input in ["n", "s", "e", "w", "north", "south", "east", "west"]:
@@ -32,20 +30,8 @@ Enter "q" to quit. Enter "h" for help.
                 player.move_west()
             elif player_input in ["e", "east"]:
                 player.move_east()
-            new_room = world.tile_at(player.x, player.y)
-            if new_room == None:
-                print("You can't go that way.")
-                player.x = old_x
-                player.y = old_y
-            else:
-                print(new_room)
-                if new_room.visited == False:
-                    print(new_room.description())
-                    new_room.mark_visited()
-                else:
-                    pass
         elif player_input in ["l", "look"]:
-            print(room.description())
+            print(world.tile_at(player.x, player.y).description())
         elif player_input in ["q", "quit"]:
             return
         elif player_input in ["h", "help"]:
