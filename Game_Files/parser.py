@@ -354,11 +354,16 @@ def parse(command):
                 get_room(player.x, player.y).take(item_dict[item], player.contents)
             except:
                 print("That's not in here!")
+        def take_all():
+            try:
+                get_room(player.x, player.y).take_all(player.contents)
+            except:
+                print("There's nothing here to take.")
         if len(command) == 1:
             print("What do you want to", str(command[0]) + "?")
         elif len(command) == 2:
             if command[1] in word_all:
-                get_room(player.x, player.y).take_all(player.contents)
+                take_all()
             else:
                 take(command[1])
         elif len(command) == 3:
@@ -380,13 +385,18 @@ def parse(command):
         def drop(item):
             try:
                 player.drop(item_dict[item], get_room(player.x, player.y).contents)
-            except:
+            except ValueError:
                 print("You don't have that.")
+        def drop_all():
+            try:
+                player.drop_all(get_room(player.x, player.y).contents)
+            except ValueError:
+                print("You aren't carrying anything.")
         if len(command) == 1:
             print("What do you want to", str(command[0] + "?"))
         elif len(command) == 2:
             if command[1] in word_all:
-                player.drop_all(get_room(player.x, player.y).contents)
+                drop_all()
             else:
                 drop(command[1])
         else:
