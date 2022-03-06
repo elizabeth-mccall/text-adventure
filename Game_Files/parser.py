@@ -19,8 +19,9 @@ verb_attack = ["attack", "hit", "strike", "kill"]
 #EXAMINE
 verb_examine = ["x", "examine", "inspect", "investigate", "study", "look at"]
 
-#TAKE-OUT
+#TAKE/DROP
 verb_take = ["take"]
+verb_drop = ["drop"]
 
 #GAME COMMANDS
 cmd_help = ["h", "help"]
@@ -234,6 +235,20 @@ class Player():
             self.move(dx = -1, dy = 0)
         else:
             print("I don't recognize that direction.")
+    def drop(self, item, location):
+        if self.contents != []:
+            self.contents.remove(item)
+            location.append(item)
+        else:
+            raise ValueError
+    def drop_all(self, location):
+        if self.contents != []:
+            for item in self.contents:
+                location.append(item)
+            self.contents.clear()
+        else:
+            raise ValueError
+
 
 player = Player()
 
@@ -246,7 +261,7 @@ item_dict = {
     "self": player}
 
 #ALL
-all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, prep_from, prep_of, item_dict, word_all]
+all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, prep_from, prep_of, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -362,7 +377,26 @@ def parse(command):
             else:
                 pass
         else:
-            print("I understood as far as you want to take something.")
+            print("I understood as far as you wanting to take something.")
+    #DROP
+    elif command[0] in verb_drop:
+        def drop(item):
+            try:
+                if item_dict[command[1]] in player.contents:
+                    player.drop(item_dict[item], get_room(player.x, player.y).contents)
+                else:
+                    print("You don't have that.")
+            except:
+                print("I don't understand what you want to take.")
+        if len(command) == 1:
+            print("What do you want to", str(command[0] + "?"))
+        elif len(command) == 2:
+            if command[1] in word_all:
+                player.drop_all(get_room(player.x, player.y).contents)
+            else:
+                drop(command[1])
+        else:
+            print("I understood as far as you wanting to drop something.")
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:
