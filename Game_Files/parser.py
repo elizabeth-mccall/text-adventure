@@ -28,7 +28,6 @@ verb_drop = ["drop"]
 
 #EAT/DRINK
 verb_eat = ["eat", "bite"]
-verb_drink = ["drink"]
 
 #GAME COMMANDS
 cmd_help = ["h", "help"]
@@ -285,7 +284,7 @@ item_dict = {
     "self": player}
 
 #ALL
-all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_drink, prep_from, prep_of, item_dict, word_all]
+all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, prep_from, prep_of, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):

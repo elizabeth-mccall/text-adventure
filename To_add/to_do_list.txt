@@ -13,7 +13,8 @@ To do:
 
 5. Consider adding locked/unlocked doors??
 
-6. Add eating?
+6. Add drinking?
+    -- Currently bottle == container, meaning would have to check for if container's contents are drinkable first?
 
 7. separate parser file into appropriate # of game files
 
