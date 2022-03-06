@@ -105,7 +105,7 @@ class Room():
             inside += " in here."
             print(inside)  
     def take(self, item, location):
-        if self.contents != []:
+        if item in self.contents:
             self.contents.remove(item)
             location.append(item)
         else:
@@ -236,7 +236,7 @@ class Player():
         else:
             print("I don't recognize that direction.")
     def drop(self, item, location):
-        if self.contents != []:
+        if item in self.contents:
             self.contents.remove(item)
             location.append(item)
         else:
@@ -351,12 +351,9 @@ def parse(command):
                 print("The {} is not a container.".format(container))
         def take(item):
             try:
-                if item_dict[command[1]] in get_room(player.x, player.y).get_contents():
-                    get_room(player.x, player.y).take(item_dict[item], player.contents)
-                else:
-                    print("That's not in here!")
+                get_room(player.x, player.y).take(item_dict[item], player.contents)
             except:
-                print("I don't understand what you want to take.")
+                print("That's not in here!")
         if len(command) == 1:
             print("What do you want to", str(command[0]) + "?")
         elif len(command) == 2:
@@ -382,12 +379,9 @@ def parse(command):
     elif command[0] in verb_drop:
         def drop(item):
             try:
-                if item_dict[command[1]] in player.contents:
-                    player.drop(item_dict[item], get_room(player.x, player.y).contents)
-                else:
-                    print("You don't have that.")
+                player.drop(item_dict[item], get_room(player.x, player.y).contents)
             except:
-                print("I don't understand what you want to take.")
+                print("You don't have that.")
         if len(command) == 1:
             print("What do you want to", str(command[0] + "?"))
         elif len(command) == 2:
