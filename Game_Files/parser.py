@@ -26,6 +26,9 @@ verb_drop = ["drop"]
 #EAT/DRINK
 verb_eat = ["eat", "bite"]
 
+#SELF
+word_self = ["myself", "me", "self"]
+
 #GAME COMMANDS
 cmd_help = ["h", "help"]
 cmd_quit = ["q", "quit"]
@@ -33,6 +36,9 @@ cmd_quit = ["q", "quit"]
 #PREP
 prep_from = ["from", "out"]
 prep_of = ["of"]
+
+#ARTICLES
+articles = ["a", "an", "the"]
 
 #OTHER
 word_all = ["all", "everything"]
@@ -72,7 +78,7 @@ class Container(Thing):
         inside = ""
         if self.contents != []:
             for item in self.contents:
-                inside += "* a {}".format(str(item))
+                inside += f"* a {item}"
                 if item != self.contents[-1]:
                     inside += "\n"
             return inside
@@ -80,12 +86,12 @@ class Container(Thing):
             return "nothing"
     def describe(self):
         if self.contents != []:
-            print(str(self.description), "containing:")
+            print(self.description, "containing:")
             print(self.whats_inside())
         elif hasattr(self, "broken"):
-            print(str(self.description))
+            print(self.description)
         else:
-            print((self.description) + " with " + str(self.whats_inside()) + " inside.")
+            print(f"{self.description} with {self.whats_inside()} inside.")
     def take_out(self, item, location):
         if self.contents != []:
             self.contents.remove(item)
@@ -204,16 +210,16 @@ class Player():
                 if item != self.contents[0]:
                     inside += "\n"
                 if isinstance(item, Container):
-                    inside += "* a {} which contains: \n".format(str(item))
+                    inside += f"* a {item} which contains: \n"
                     if item.contents == []:
                         inside += '''   nothing'''
                     else:
                         for content in item.contents:
                             if content != item.contents[0]:
                                 inside += "\n"
-                            inside += '''   * a {}'''.format(str(content))
+                            inside += f'''   * a {content}'''
                 else:
-                    inside += "* a {}".format(str(item))
+                    inside += f"* a {item}"
             print(inside)
         else:
             print("nothing")
@@ -277,11 +283,10 @@ item_dict = {
     "basket": basket,
     "jar": jar,
     "bottle": bottle,
-    "bread": bread,
-    "self": player}
+    "bread": bread}
 
 #ALL
-all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, prep_from, prep_of, item_dict, word_all]
+all_words = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, prep_from, prep_of, articles, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -291,26 +296,31 @@ def check(command):
     else:
         for command_word in command:
             checker = False
-            for word_list in all_commands:
+            for word_list in all_words:
                 if command_word in word_list:
                     # for debugging: print("I understand", command_word)
                     checker = True
                 else:
                     pass
             if checker == False:
-                print('''I don't know the word "''' + str(command_word) + '".')
+                print(f'''I don't know the word "{command_word}".''')
                 return False
         if checker == True:
             return True
 
 def parse(command):
+    #REMOVE ARTICLES
+    command = [word for word in command if word not in articles]
+    print(command)
+    if command == []:
+        print("I'm sorry, I don't understand.")
     #MOVEMENT
-    if any(word in directions for word in command) or any(word in directions_short for word in command) or any(word in verb_move for word in command):
+    elif any(word in directions for word in command) or any(word in directions_short for word in command) or any(word in verb_move for word in command):
         if command[0] in directions:
             if len(command) == 1:
                 player.move_direction(command[0])
             else:
-                print("I understand you as far as wanting to move", str(command[0]) + ".")
+                print(f"I understand you as far as wanting to move {command[0]}.")
         elif command[0] in directions_short:
             command_direction = None
             for direction in directions:
@@ -321,19 +331,19 @@ def parse(command):
             player.move_direction(command_direction)
         elif command[0] in verb_move:
             if len(command) == 1:
-                print("Where do you want to", str(command[0]) + "?")
+                print(f"Where do you want to {command[0]}?")
             elif len(command) == 2:
                 if command[1] in directions or command[1] in directions_short:
                     player.move_direction(command[1])
                 else:
-                    print('"' + str(command[1].capitalize()) + '" is not a direction.')
+                    print(f'"{command[1].capitalize()}" is not a direction.')
             else:
-                print("I don't understand where you want to", command[0])
+                print(f"I don't understand where you want to {command[0]}.")
         else:
             def is_movement(word):
                 return word in directions or word in directions_short or word in verb_move
             desired_direction = [word for index, word in enumerate(command) if is_movement(word)]
-            print('''I don't understand how you used the word "''' + str(desired_direction[0]) + '".')
+            print(f'''I don't understand how you used the word "{desired_direction[0]}".''')
     #INVENTORY
     elif command[0] in verb_inventory:
         if len(command) == 1: 
@@ -355,7 +365,9 @@ def parse(command):
             try:
                 if command[1] in word_all:
                     print("It's not clear what you're referring to.")
-                elif command[1] == "self" or item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in player.contents:
+                elif command[1] in word_self:
+                    player.describe()
+                elif item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in player.contents:
                     item_dict[command[1]].describe()
                 else:
                     print("You can't see a {} here!".format(command[1]))
@@ -390,7 +402,7 @@ def parse(command):
             except KeyError:
                 print("I understood you as far as wanting to take something.")
         if len(command) == 1:
-            print("What do you want to", str(command[0]) + "?")
+            print("What do you want to {}?".format(str(command[0])))
         elif len(command) == 2:
             if command[1] in word_all:
                 take_all()
