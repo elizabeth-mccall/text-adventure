@@ -112,8 +112,8 @@ class Room():
     def take_all(self, location):
         if self.contents != []:
             for item in self.contents:
-                self.contents.remove(item)
                 location.append(item)
+            self.contents.clear()
         else:
             raise ValueError
 
