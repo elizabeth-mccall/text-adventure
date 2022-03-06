@@ -3,6 +3,9 @@
 ###############
 
 #MOVEMENT
+from importlib.resources import contents
+
+
 verb_move = ["go", "walk", "move", "head"]
 directions = ["north", "south", "east", "west", "up", "down"]
 directions_short = ["n", "e", "w", "s", "u", "d"]
@@ -22,6 +25,10 @@ verb_examine = ["x", "examine", "inspect", "investigate", "study", "look at"]
 #TAKE/DROP
 verb_take = ["take"]
 verb_drop = ["drop"]
+
+#EAT/DRINK
+verb_eat = ["eat", "bite"]
+verb_drink = ["drink"]
 
 #GAME COMMANDS
 cmd_help = ["h", "help"]
@@ -45,7 +52,7 @@ class Thing:
     def __str__(self):
         return self.name
     def describe(self):
-        print(self.description)         
+        print(self.description) 
 
 class Container(Thing):
     def __init__(self, name, description, contents, **kwargs):
@@ -77,6 +84,11 @@ class Container(Thing):
         else:
             raise ValueError
 
+class Food(Thing):
+    def __init__(self, name, description, **kwargs):
+        super().__init__(name, description, **kwargs)
+
+bread = Food(name = "slice of bread", description = "A slightly stale slice of wheat bread.", edible = True)
 sword = Thing(name="glowing sword", description="A glowing sword.")
 branch = Thing(name="branch", description="A tree branch.")
 jar = Container(name = "jar", description="An empty jar", contents = [])
@@ -112,9 +124,12 @@ class Room():
             raise ValueError     
     def take_all(self, location):
         if self.contents != []:
+            return_list = []
             for item in self.contents:
                 location.append(item)
+                return_list.append(item)
             self.contents.clear()
+            return return_list
         else:
             raise ValueError
 
@@ -128,7 +143,7 @@ class RegularRoom(Room):
         return "Regular Room"
 
 class CoolRoom(Room):
-    def __init__(self, x, y, contents = [sword], description = "This is a pretty cool room."):
+    def __init__(self, x, y, contents = [sword, bread], description = "This is a pretty cool room."):
         self.x = x
         self.y = y
         self.contents = contents
@@ -248,7 +263,14 @@ class Player():
             self.contents.clear()
         else:
             raise ValueError
-
+    def eat(self, item):
+        if item in self.contents:
+            if isinstance(item, Food):
+                self.contents.remove(item)
+            else:
+                raise AttributeError
+        else:
+            raise ValueError
 
 player = Player()
 
@@ -258,10 +280,11 @@ item_dict = {
     "basket": basket,
     "jar": jar,
     "bottle": bottle,
+    "bread": bread,
     "self": player}
 
 #ALL
-all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, prep_from, prep_of, item_dict, word_all]
+all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_drink, prep_from, prep_of, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -352,12 +375,14 @@ def parse(command):
         def take(item):
             try:
                 get_room(player.x, player.y).take(item_dict[item], player.contents)
+                print("Taken.")
             except:
                 print("That's not in here!")
         def take_all():
             try:
-                get_room(player.x, player.y).take_all(player.contents)
-            except:
+                for item in get_room(player.x, player.y).take_all(player.contents):
+                    print("Taken: {}".format(item))
+            except ValueError:
                 print("There's nothing here to take.")
         if len(command) == 1:
             print("What do you want to", str(command[0]) + "?")
@@ -401,6 +426,20 @@ def parse(command):
                 drop(command[1])
         else:
             print("I understood as far as you wanting to drop something.")
+    #EAT
+    elif command[0] in verb_eat:
+        def eat(item):
+            try:
+                player.eat(item_dict[item])
+            except AttributeError:
+                print("You can't eat that!!")
+            except ValueError:
+                print("You don't have that.")
+        if len(command) == 1:
+            print("What do you want to eat?)")
+        elif len(command) == 2:
+            eat(command[1])
+            print("You eat the {}. Yum!".format(command[1]))
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:

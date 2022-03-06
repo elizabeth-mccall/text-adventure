@@ -13,6 +13,10 @@ To do:
 
 5. Consider adding locked/unlocked doors??
 
+6. Add eating?
+
+7. separate parser file into appropriate # of game files
+
 For the future (aka complicated):
 #. Add money/trade?
 
