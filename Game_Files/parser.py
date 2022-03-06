@@ -102,11 +102,11 @@ bottle = Container(name = "bottle", description="A small glass bottle", contents
 basket = Container(name= "basket", description="A woven basket", contents = [jar, bottle, "knife"])
 
 class Room():
-    def __init__(self, x, y, contents = [], description = ""):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.contents = contents
-        self.description = description
+        self.contents = []
+        self.description = ""
     def describe(self):
         print(self.description)
         inside = "You see a "
@@ -138,38 +138,38 @@ class Room():
             raise ValueError
 
 class RegularRoom(Room):
-    def __init__(self, x, y, contents = [basket, jar, bottle], description = "It's just a room."):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.contents = contents
-        self.description = description
+        self.contents = [basket, jar, bottle]
+        self.description = "It's just a room."
     def __str__(self):
         return "Regular Room"
 
 class CoolRoom(Room):
-    def __init__(self, x, y, contents = [sword, bread], description = "This is a pretty cool room."):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.contents = contents
-        self.description = description
+        self.contents = [sword, bread]
+        self.description = "This is a pretty cool room."
     def __str__(self):
         return "Cool Room"
 
 class StartRoom(Room):
-    def __init__(self, x, y, contents = [branch], description = "This is the starting room."):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.contents = contents
-        self.description = description
+        self.contents = [branch]
+        self.description = "This is the starting room."
     def __str__(self):
         return "Starting Room"
 
 class EmptyRoom(Room):
-    def __init__(self, x, y, contents = [], description = "Just an empty room."):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.contents = contents
-        self.description = description
+        self.contents = []
+        self.description = "Just an empty room."
     def __str__(self):
         return "Empty Room"
 
