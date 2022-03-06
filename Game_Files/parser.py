@@ -6,7 +6,7 @@
 from tkinter import W
 
 
-verb_move = ["go", "walk", "move", "head"]
+verb_go = ["go", "walk", "head"]
 directions = ["north", "south", "east", "west"]
 directions_short = ["n", "e", "w", "s"]
 
@@ -29,8 +29,12 @@ verb_drop = ["drop"]
 #EAT/DRINK
 verb_eat = ["eat", "bite"]
 
-#PUSH
-verb_push = ["push", "pull", "budge", "shove"]
+#MOVE
+verb_move = ["move", "push", "pull", "budge", "shove"]
+
+#UNLOCK
+verb_unlock = ["unlock"]
+word_door = ["door"]
 
 #SELF
 word_self = ["myself", "me", "self"]
@@ -42,6 +46,7 @@ cmd_quit = ["q", "quit"]
 #PREP
 prep_from = ["from", "out"]
 prep_of = ["of"]
+prep_with = ["with"]
 
 #ARTICLES
 articles = ["a", "an", "the"]
@@ -156,6 +161,17 @@ class Room():
         print(f"You move the {item} a couple inches.")
     def update(self):
         pass
+    def unlock_adjacents(self):
+        if hasattr(get_room(self.x, self.y - 1), "locked"):
+            get_room(self.x, self.y - 1).unlock_me()
+        elif hasattr(get_room(self.x, self.y + 1), "locked"):
+            get_room(self.x, self.y + 1).unlock_me()
+        elif hasattr(get_room(self.x - 1, self.y), "locked"):
+            get_room(self.x - 1, self.y).unlock_me()
+        elif hasattr(get_room(self.x + 1, self.y), "locked"):
+            get_room(self.x + 1, self.y).unlock_me()
+        else:
+            print("That room isn't locked.")
 
 class RegularRoom(Room):
     def __init__(self, x, y):
@@ -230,8 +246,24 @@ class RugRoom(Room):
         elif rug.originalSpot == False:
             self.description = "A rug lays on the ground, slightly askew."
 
+class LockedRoom(Room):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.contents = [branch]
+        self.description = "A small room."
+        self.locked = True
+    def __str__(self):
+        return "Locked Room"
+    def unlock_me(self):
+        if self.locked == True:
+            self.locked = False
+            print("You unlock the door.")
+        elif self.locked == False:
+            print("The door is already unlocked.")
+
 world = [
-    [CoolRoom(0,0), CoolRoom(1,0), RegularRoom(2,0)],
+    [LockedRoom(0,0), CoolRoom(1,0), RegularRoom(2,0)],
     [CoolRoom(0,1), RegularRoom(1,1), StartRoom(2,1)],
     [RugRoom(0,2), EmptyRoom(1,2), RegularRoom(2,2)]
 ]
@@ -258,8 +290,7 @@ class Player():
         inside = ""
         if self.contents != []:
             for item in self.contents:
-                if item != self.contents[0]:
-                    inside += "\n"
+                inside += "\n"
                 if isinstance(item, Container):
                     inside += f"* a {item} which contains: \n"
                     if item.contents == []:
@@ -271,12 +302,11 @@ class Player():
                             inside += f'''   * a {content}'''
                 else:
                     inside += f"* a {item}"
-            print(inside)
+            return inside
         else:
-            print("nothing")
+            return "\n nothing"
     def inventory(self):
-        print("You are carrying:")
-        self.whats_inside()
+        print(f"You are carrying: {self.whats_inside()}")
     def move(self, dx, dy):
         old_x = self.x
         old_y = self.y
@@ -287,6 +317,15 @@ class Player():
             self.x = old_x
             self.y = old_y
             print("You can't go that way.")
+        elif hasattr(new_room, "locked"):
+            if new_room.locked == True:
+                self.x = old_x
+                self.y = old_y
+                print("The door is locked, preventing you from going in.")
+            elif new_room.locked == False:
+                print(new_room)
+                new_room.update()
+                new_room.describe()
         else:
             print(new_room)
             new_room.update()
@@ -340,7 +379,7 @@ item_dict = {
     "bread": bread}
 
 #ALL
-all_words = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, verb_push, prep_from, prep_of, articles, item_dict, word_all]
+all_words = [verb_go, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, verb_move, verb_unlock, word_door, prep_from, prep_of, prep_with, articles, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -365,11 +404,11 @@ def check(command):
 def parse(command):
     #REMOVE ARTICLES
     command = [word for word in command if word not in articles]
-    print(command)
+    #print(command) #for debugging
     if command == []:
         print("I'm sorry, I don't understand.")
     #MOVEMENT
-    elif any(word in directions for word in command) or any(word in directions_short for word in command) or any(word in verb_move for word in command):
+    elif any(word in directions for word in command) or any(word in directions_short for word in command) or any(word in verb_go for word in command):
         if command[0] in directions:
             if len(command) == 1:
                 player.move_direction(command[0])
@@ -383,7 +422,7 @@ def parse(command):
                 else:
                     pass
             player.move_direction(command_direction)
-        elif command[0] in verb_move:
+        elif command[0] in verb_go:
             if len(command) == 1:
                 print(f"Where do you want to {command[0]}?")
             elif len(command) == 2:
@@ -395,7 +434,7 @@ def parse(command):
                 print(f"I don't understand where you want to {command[0]}.")
         else:
             def is_movement(word):
-                return word in directions or word in directions_short or word in verb_move
+                return word in directions or word in directions_short or word in verb_go
             desired_direction = [word for index, word in enumerate(command) if is_movement(word)]
             print(f'''I don't understand how you used the word "{desired_direction[0]}".''')
     #INVENTORY
@@ -421,10 +460,15 @@ def parse(command):
                     print("It's not clear what you're referring to.")
                 elif command[1] in word_self:
                     player.describe()
-                elif item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in get_room(player.x, player.y).furniture or item_dict[command[1]] in player.contents:
+                elif item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in player.contents:
                     item_dict[command[1]].describe()
+                elif hasattr(get_room(player.x, player.y), "furniture"):
+                    if item_dict[command[1]] in get_room(player.x, player.y).furniture: 
+                        item_dict[command[1].describe()]
+                    else:
+                        print(f"You can't see a {command[1]} here.")
                 else:
-                    print("You can't see a {} here!".format(command[1]))
+                    print(f"You can't see a {command[1]} here!")
             except KeyError:
                 print("I understood you as far as wanting to examine something.")
     #TAKE
@@ -530,14 +574,40 @@ def parse(command):
             breakit(command[1])
         else:
             print(f"I understood you as far as wanting to {command[0]} something.")
-    #PUSH
-    elif command[0] in verb_push:
+    #MOVE-ITEM
+    elif command[0] in verb_move:
         if len(command) == 1:
             print(f"What do you want to {command[0]}?")
         elif len(command) == 2:
             get_room(player.x, player.y).push(item_dict[command[1]])
         else:
             print(f"I understood you as far as wanting to {command[0]} something.")
+    #UNLOCK
+    elif command[0] in verb_unlock:
+        def unlock():
+            try:
+                if key in player.contents:
+                    get_room(player.x, player.y).unlock_adjacents()
+                else:
+                    print("You don't have the key for that door.")
+            except:
+                print("You don't see a lock nearby.")
+        if len(command) == 1:
+            unlock()
+        elif len(command) == 2:
+            if command[1] in word_door:
+                unlock()
+        elif len(command) == 4:
+            if command[1] in word_door and command[2] in prep_with:
+                if command[3] == "key":
+                    unlock()
+                else:
+                    print(f"You can't unlock a door with a {command[3]}.")
+            else:
+                print("I don't understand what you want to unlock.")
+        else:
+            print("I understood you as far as wanting to unlock something.")
+
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:
@@ -564,7 +634,7 @@ def play():
         command = input(">").lower().split()
         if check(command) == True:
             parse(command)
-        print("For debugging: Your coordinates are ({}, {})".format(player.x, player.y))
+        # print("For debugging: Your coordinates are ({}, {})".format(player.x, player.y))
         print("")
 
 play()
