@@ -75,8 +75,7 @@ class Container(Thing):
         inside = ""
         if self.contents != []:
             for item in self.contents:
-                inside += "* a "
-                inside += str(item)
+                inside += "* a {}".format(str(item))
                 if item != self.contents[-1]:
                     inside += "\n"
             return inside
@@ -205,31 +204,22 @@ class Player():
         inside = ""
         if self.contents != []:
             for item in self.contents:
-                if isinstance(item, Container):
-                    inside += "* a "
-                    inside += str(item)
-                    inside += (" which contains:")
+                if item != self.contents[0]:
                     inside += "\n"
-                    if item.whats_inside() == "nothing":
+                    pass
+                if isinstance(item, Container):
+                    inside += "* a {} which contains: \n".format(str(item))
+                    if item.contents == []:
                         inside += '''   nothing'''
-                        if item == self.contents[-1]:
-                            continue
-                        inside += "\n"
                     else:
-                        for content in item.get_contents():
-                            inside += '''   * a '''
-                            inside += str(content)
-                            if content != item.get_contents()[-1]:
+                        for content in item.contents:
+                            if content != item.contents[0]:
                                 inside += "\n"
-                        if item != self.contents[-1]:
-                            inside += "\n"
+                            inside += '''   * a {}'''.format(str(content))
                 else:
-                    inside += "* a "
-                    inside += str(item)
-                    if item != self.contents[-1]:
-                        inside += "\n"
+                    inside += "* a {}".format(str(item))
             print(inside)
-        elif self.contents == []:
+        else:
             print("nothing")
     def inventory(self):
         print("You are carrying:")
