@@ -29,6 +29,9 @@ verb_drop = ["drop"]
 #EAT/DRINK
 verb_eat = ["eat", "bite"]
 
+#PUSH
+verb_push = ["push", "pull", "budge", "shove"]
+
 #SELF
 word_self = ["myself", "me", "self"]
 
@@ -102,7 +105,8 @@ class Container(Thing):
         else:
             raise ValueError
 
-
+key = Thing(name = "bronze key", description = "A large bronze key.")
+rug = Thing(name="rug", description = "An ornate rug.", coveringKey = True, originalSpot = True)
 bread = Thing(name = "slice of bread", description = "A slightly stale slice of wheat bread.", edible = True)
 sword = Thing(name="glowing sword", description="A glowing sword.")
 branch = Thing(name="branch", description="A tree branch.")
@@ -115,6 +119,7 @@ class Room():
         self.x = x
         self.y = y
         self.contents = []
+        self.furniture = []
         self.description = ""
     def describe(self):
         print(self.description)
@@ -133,6 +138,8 @@ class Room():
         if item in self.contents:
             self.contents.remove(item)
             location.append(item)
+        elif item in self.furniture:
+            raise AttributeError
         else:
             raise ValueError     
     def take_all(self, location):
@@ -145,6 +152,8 @@ class Room():
             return return_list
         else:
             raise ValueError
+    def push(self, item):   
+        print(f"You move the {item} a couple inches.")
     def update(self):
         pass
 
@@ -188,10 +197,43 @@ class EmptyRoom(Room):
     def __str__(self):
         return "Empty Room"
 
+class RugRoom(Room):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.contents = [sword, bread]
+        self.furniture = [rug]
+    def __str__(self):
+        return "Rug Room"
+    def push(self, item):
+        if item == rug and rug.originalSpot == True:
+            rug.originalSpot = False
+            if rug.coveringKey == True:
+                self.contents.append(key)
+                rug.coveringKey = False
+                print("You manage to pull the rug to the side. A large bronze key is laying underneath.")
+            else:
+                print("You move the rug aside, but nothing is underneath.")
+        elif item == rug and rug.originalSpot == False:
+            rug.originalSpot = True
+            if key in self.contents:
+                self.contents.remove(key)
+                rug.coveringKey = True
+            print("You move the rug back to its original spot.")
+        else:
+            print(f"You move the {item} a couple inches.")
+    def update(self):
+        if rug.originalSpot == True and rug.coveringKey == True:
+            self.description = "An ornate rug lays on the ground in this room, but it's a bit lumpy."
+        if rug.originalSpot == True and rug.coveringKey == False:
+            self.description = "An ornate rug lays on the ground in this room."
+        elif rug.originalSpot == False:
+            self.description = "A rug lays on the ground, slightly askew."
+
 world = [
     [CoolRoom(0,0), CoolRoom(1,0), RegularRoom(2,0)],
     [CoolRoom(0,1), RegularRoom(1,1), StartRoom(2,1)],
-    [RegularRoom(0,2), EmptyRoom(1,2), RegularRoom(2,2)]
+    [RugRoom(0,2), EmptyRoom(1,2), RegularRoom(2,2)]
 ]
 
 start_location = 2, 1
@@ -288,6 +330,8 @@ class Player():
 player = Player()
 
 item_dict = {
+    "key": key,
+    "rug": rug,
     "sword": sword,
     "branch": branch,
     "basket": basket,
@@ -296,7 +340,7 @@ item_dict = {
     "bread": bread}
 
 #ALL
-all_words = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, prep_from, prep_of, articles, item_dict, word_all]
+all_words = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, verb_push, prep_from, prep_of, articles, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -377,7 +421,7 @@ def parse(command):
                     print("It's not clear what you're referring to.")
                 elif command[1] in word_self:
                     player.describe()
-                elif item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in player.contents:
+                elif item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in get_room(player.x, player.y).furniture or item_dict[command[1]] in player.contents:
                     item_dict[command[1]].describe()
                 else:
                     print("You can't see a {} here!".format(command[1]))
@@ -399,8 +443,10 @@ def parse(command):
             try:
                 get_room(player.x, player.y).take(item_dict[item], player.contents)
                 print("Taken.")
+            except AttributeError:
+                print("That's much too heavy to carry.")
             except ValueError:
-                print("That's not in here!")
+                print(f"You don't see a {item} in here.")
             except KeyError:
                 print("I understood you as far as wanting to take something.")
         def take_all():
@@ -479,9 +525,19 @@ def parse(command):
             except AttributeError:
                 print("You hit it as hard as you can, but it doesn't break.")
         if len(command) == 1:
-            print("What do you want to {}?".format(command[0]))
+            print(f"What do you want to {command[0]}?")
         elif len(command) == 2:
             breakit(command[1])
+        else:
+            print(f"I understood you as far as wanting to {command[0]} something.")
+    #PUSH
+    elif command[0] in verb_push:
+        if len(command) == 1:
+            print(f"What do you want to {command[0]}?")
+        elif len(command) == 2:
+            get_room(player.x, player.y).push(item_dict[command[1]])
+        else:
+            print(f"I understood you as far as wanting to {command[0]} something.")
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:
