@@ -3,9 +3,6 @@
 ###############
 
 #MOVEMENT
-from importlib.resources import contents
-
-
 verb_move = ["go", "walk", "move", "head"]
 directions = ["north", "south", "east", "west"]
 directions_short = ["n", "e", "w", "s"]
