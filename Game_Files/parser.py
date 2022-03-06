@@ -101,8 +101,6 @@ class Room():
         self.y = y
         self.contents = contents
         self.description = description
-    def get_contents(self):
-        return self.contents
     def describe(self):
         print(self.description)
         inside = "You see a "
@@ -258,9 +256,12 @@ class Player():
             raise ValueError
     def drop_all(self, location):
         if self.contents != []:
+            return_list = []
             for item in self.contents:
                 location.append(item)
+                return_list.append(item)
             self.contents.clear()
+            return return_list
         else:
             raise ValueError
     def eat(self, item):
@@ -356,11 +357,13 @@ def parse(command):
             print("What do you want to", str(command[0]) + "?")
         else: 
             try:
-                if command[1] == "self" or item_dict[command[1]] in get_room(player.x, player.y).get_contents() or item_dict[command[1]] in player.contents:
+                if command[1] in word_all:
+                    print("It's not clear what you're referring to.")
+                elif command[1] == "self" or item_dict[command[1]] in get_room(player.x, player.y).contents or item_dict[command[1]] in player.contents:
                     item_dict[command[1]].describe()
                 else:
                     print("You can't see a {} here!".format(command[1]))
-            except:
+            except KeyError:
                 print("I understood you as far as wanting to examine something.")
     #TAKE
     elif command[0] in verb_take:
@@ -370,20 +373,26 @@ def parse(command):
                 print("You take the {} from the {}.".format(item, container))
             except ValueError:
                 print("There is no {} in the {}.".format(item, container))
-            except:
+            except AttributeError:
                 print("The {} is not a container.".format(container))
+            except KeyError:
+                print("I understood you as far as wanting to take something.")
         def take(item):
             try:
                 get_room(player.x, player.y).take(item_dict[item], player.contents)
                 print("Taken.")
-            except:
+            except ValueError:
                 print("That's not in here!")
+            except KeyError:
+                print("I understood you as far as wanting to take something.")
         def take_all():
             try:
                 for item in get_room(player.x, player.y).take_all(player.contents):
                     print("Taken: {}".format(item))
             except ValueError:
                 print("There's nothing here to take.")
+            except KeyError:
+                print("I understood you as far as wanting to take something.")
         if len(command) == 1:
             print("What do you want to", str(command[0]) + "?")
         elif len(command) == 2:
@@ -410,11 +419,13 @@ def parse(command):
         def drop(item):
             try:
                 player.drop(item_dict[item], get_room(player.x, player.y).contents)
+                print("Dropped.")
             except ValueError:
                 print("You don't have that.")
         def drop_all():
             try:
-                player.drop_all(get_room(player.x, player.y).contents)
+                for item in player.drop_all(get_room(player.x, player.y).contents):
+                    print("Dropped: {}".format(item))
             except ValueError:
                 print("You aren't carrying anything.")
         if len(command) == 1:
@@ -431,15 +442,17 @@ def parse(command):
         def eat(item):
             try:
                 player.eat(item_dict[item])
+                print("You eat the {}. Yum!".format(item_dict[item]))
             except AttributeError:
                 print("You can't eat that!!")
             except ValueError:
                 print("You don't have that.")
+            except KeyError:
+                print("I don't understand what you want to eat.")
         if len(command) == 1:
             print("What do you want to eat?)")
         elif len(command) == 2:
             eat(command[1])
-            print("You eat the {}. Yum!".format(command[1]))
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:
