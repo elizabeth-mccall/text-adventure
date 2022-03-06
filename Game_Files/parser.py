@@ -3,6 +3,9 @@
 ###############
 
 #MOVEMENT
+from tkinter import W
+
+
 verb_move = ["go", "walk", "move", "head"]
 directions = ["north", "south", "east", "west"]
 directions_short = ["n", "e", "w", "s"]
@@ -142,6 +145,8 @@ class Room():
             return return_list
         else:
             raise ValueError
+    def update(self):
+        pass
 
 class RegularRoom(Room):
     def __init__(self, x, y):
@@ -157,9 +162,13 @@ class CoolRoom(Room):
         self.x = x
         self.y = y
         self.contents = [sword, bread]
-        self.description = "This is a pretty cool room."
     def __str__(self):
         return "Cool Room"
+    def update(self):
+        if sword in self.contents:
+            self.description = "This is a pretty cool room."
+        else:
+            self.description = "This was a pretty cool room, although you realize it's a lot less cool without the glowing sword."
 
 class StartRoom(Room):
     def __init__(self, x, y):
@@ -238,6 +247,7 @@ class Player():
             print("You can't go that way.")
         else:
             print(new_room)
+            new_room.update()
             new_room.describe()
     def move_direction(self, direction):
         if direction == "north":
@@ -494,6 +504,7 @@ def parse(command):
 
 def play():
     while True:
+        get_room(player.x, player.y).update()
         command = input(">").lower().split()
         if check(command) == True:
             parse(command)
