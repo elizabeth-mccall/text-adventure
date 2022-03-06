@@ -13,9 +13,6 @@ verb_inventory = ["i", "inventory"]
 #LOOK
 verb_look = ["l", "look"]
 
-#ATTACK
-verb_attack = ["attack", "hit", "strike", "kill"]
-
 #BREAK
 verb_break = ["break", "smash", "shatter"]
 
@@ -206,7 +203,6 @@ class Player():
             for item in self.contents:
                 if item != self.contents[0]:
                     inside += "\n"
-                    pass
                 if isinstance(item, Container):
                     inside += "* a {} which contains: \n".format(str(item))
                     if item.contents == []:
@@ -285,7 +281,7 @@ item_dict = {
     "self": player}
 
 #ALL
-all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, prep_from, prep_of, item_dict, word_all]
+all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, prep_from, prep_of, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
