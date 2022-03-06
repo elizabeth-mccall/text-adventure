@@ -19,6 +19,9 @@ verb_look = ["l", "look"]
 #ATTACK
 verb_attack = ["attack", "hit", "strike", "kill"]
 
+#BREAK
+verb_break = ["break", "smash", "shatter"]
+
 #EXAMINE
 verb_examine = ["x", "examine", "inspect", "investigate", "study", "look at"]
 
@@ -48,10 +51,22 @@ class Thing:
     def __init__(self, name, description, **kwargs):
         self.name = name
         self.description = description
+        self.__dict__.update(kwargs)
     def __str__(self):
         return self.name
     def describe(self):
         print(self.description) 
+    def breakit(self, location):
+        if self.breakable == True:
+            self.name = "broken " + self.name
+            setattr(self, "broken", True)
+            if isinstance(self, Container):
+                for item in self.contents:
+                    location.append(item)
+                self.description += ", now broken and unable to hold anything."
+                self.__class__ = Thing
+            else:
+                self.description += "Sadly, it is now broken."
 
 class Container(Thing):
     def __init__(self, name, description, contents, **kwargs):
@@ -74,6 +89,8 @@ class Container(Thing):
         if self.contents != []:
             print(str(self.description), "containing:")
             print(self.whats_inside())
+        elif self.broken == True:
+            print(str(self.description))
         else:
             print((self.description) + " with " + str(self.whats_inside()) + " inside.")
     def take_out(self, item, location):
@@ -83,14 +100,11 @@ class Container(Thing):
         else:
             raise ValueError
 
-class Food(Thing):
-    def __init__(self, name, description, **kwargs):
-        super().__init__(name, description, **kwargs)
 
-bread = Food(name = "slice of bread", description = "A slightly stale slice of wheat bread.", edible = True)
+bread = Thing(name = "slice of bread", description = "A slightly stale slice of wheat bread.", edible = True)
 sword = Thing(name="glowing sword", description="A glowing sword.")
 branch = Thing(name="branch", description="A tree branch.")
-jar = Container(name = "jar", description="An empty jar", contents = [])
+jar = Container(name = "jar", description="An empty jar", contents = [], breakable = True)
 bottle = Container(name = "bottle", description="A small glass bottle", contents = ["bit of water"])
 basket = Container(name= "basket", description="A woven basket", contents = [jar, bottle, "knife"])
 
@@ -265,7 +279,7 @@ class Player():
             raise ValueError
     def eat(self, item):
         if item in self.contents:
-            if isinstance(item, Food):
+            if hasattr(item, "edible"):
                 self.contents.remove(item)
             else:
                 raise AttributeError
@@ -284,7 +298,7 @@ item_dict = {
     "self": player}
 
 #ALL
-all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, prep_from, prep_of, item_dict, word_all]
+all_commands = [verb_move, directions, directions_short, verb_inventory, verb_look, verb_attack, verb_examine, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, prep_from, prep_of, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -452,6 +466,17 @@ def parse(command):
             print("What do you want to eat?)")
         elif len(command) == 2:
             eat(command[1])
+    #BREAK
+    elif command[0] in verb_break:
+        def breakit(item):
+            try: 
+                item_dict[item].breakit(get_room(player.x, player.y).contents)
+            except AttributeError:
+                print("You hit it as hard as you can, but it doesn't break.")
+        if len(command) == 1:
+            print("What do you want to {}?".format(command[0]))
+        elif len(command) == 2:
+            breakit(command[1])
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:
