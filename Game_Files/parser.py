@@ -82,7 +82,7 @@ class Container(Thing):
         if self.contents != []:
             print(str(self.description), "containing:")
             print(self.whats_inside())
-        elif self.broken == True:
+        elif hasattr(self, "broken"):
             print(str(self.description))
         else:
             print((self.description) + " with " + str(self.whats_inside()) + " inside.")
