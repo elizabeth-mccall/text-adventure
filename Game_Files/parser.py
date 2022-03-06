@@ -7,8 +7,8 @@ from importlib.resources import contents
 
 
 verb_move = ["go", "walk", "move", "head"]
-directions = ["north", "south", "east", "west", "up", "down"]
-directions_short = ["n", "e", "w", "s", "u", "d"]
+directions = ["north", "south", "east", "west"]
+directions_short = ["n", "e", "w", "s"]
 
 #INVENTORY
 verb_inventory = ["i", "inventory"]
@@ -321,13 +321,13 @@ def parse(command):
                     command_direction = direction
                 else:
                     pass
-            print("Shortcut -- Execute the move function with", command_direction, "as a direction.")
+            player.move_direction(command_direction)
         elif command[0] in verb_move:
             if len(command) == 1:
                 print("Where do you want to", str(command[0]) + "?")
             elif len(command) == 2:
                 if command[1] in directions or command[1] in directions_short:
-                    print("Execute move function with", command[1], "as a direction.")
+                    player.move_direction(command[1])
                 else:
                     print('"' + str(command[1].capitalize()) + '" is not a direction.')
             else:
