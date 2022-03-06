@@ -23,8 +23,8 @@ verb_break = ["break", "smash", "shatter"]
 verb_examine = ["x", "examine", "inspect", "investigate", "study", "look at"]
 
 #TAKE/DROP
-verb_take = ["take"]
-verb_drop = ["drop"]
+verb_take = ["take", "grab"]
+verb_drop = ["drop", "toss"]
 
 #EAT/DRINK
 verb_eat = ["eat", "bite"]
@@ -566,6 +566,7 @@ def parse(command):
         def breakit(item):
             try: 
                 item_dict[item].breakit(get_room(player.x, player.y).contents)
+                print(f"You smash the {item} as hard as you can, and it breaks!")
             except AttributeError:
                 print("You hit it as hard as you can, but it doesn't break.")
         if len(command) == 1:
@@ -607,11 +608,21 @@ def parse(command):
                 print("I don't understand what you want to unlock.")
         else:
             print("I understood you as far as wanting to unlock something.")
-
     #HELP
     elif command[0] in cmd_help:
         if len(command) == 1:
-            print("Help menu.")
+            print('''
+Commands:
+    'north'/'n' = go north
+    'south'/'s' = go south
+    'east'/'e' = go east
+    'west'/'w' = go west
+    'look'/'l' = look around the room
+    'inventory'/'i' = check your inventory
+    'examine'/'x' = examine (something)
+    'help'/'h' = open help menu
+    'quit'/'q' = quit the game
+    + and more (but you'll have to figure those out yourself!)''')
         else:
             print("Type 'help' if you need help.")
     #QUIT
