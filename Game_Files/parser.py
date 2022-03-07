@@ -3,9 +3,6 @@
 ###############
 
 #MOVEMENT
-from tkinter import W
-
-
 verb_go = ["go", "walk", "head"]
 directions = ["north", "south", "east", "west"]
 directions_short = ["n", "e", "w", "s"]
@@ -173,6 +170,10 @@ class Room():
         else:
             print("That room isn't locked.")
 
+###############
+#### ROOMS ####
+###############
+
 class RegularRoom(Room):
     def __init__(self, x, y):
         self.x = x
@@ -278,6 +279,10 @@ def get_room(x, y):
     except IndexError:
         return None
 
+###############
+#### PLAYER ###
+###############
+
 class Player():
     def __init__(self):
         self.description = "It's just you."
@@ -367,6 +372,10 @@ class Player():
             raise ValueError
 
 player = Player()
+
+###############
+### PARSING ###
+###############
 
 item_dict = {
     "key": key,
@@ -464,7 +473,7 @@ def parse(command):
                     item_dict[command[1]].describe()
                 elif hasattr(get_room(player.x, player.y), "furniture"):
                     if item_dict[command[1]] in get_room(player.x, player.y).furniture: 
-                        item_dict[command[1].describe()]
+                        item_dict[command[1]].describe()
                     else:
                         print(f"You can't see a {command[1]} here.")
                 else:
@@ -639,7 +648,20 @@ Commands:
     else:
         print("Sorry, but you stumped me with that one.")
 
+#################
+### GAME LOOP ###
+#################
+
 def play():
+    print('''
+Welcome to Dungeon Trek!
+(c) Elizabeth McCall
+
+Enter "help" for a list of commands. Enter "quit" to quit the game.
+''')
+    print(get_room(player.x, player.y))
+    get_room(player.x, player.y).describe()
+    print("")
     while True:
         get_room(player.x, player.y).update()
         command = input(">").lower().split()
