@@ -6,16 +6,6 @@ from playerchar import *
 ### PARSING ###
 ###############
 
-item_dict = {
-    "key": key,
-    "rug": rug,
-    "sword": sword,
-    "branch": branch,
-    "basket": basket,
-    "jar": jar,
-    "bottle": bottle,
-    "bread": bread}
-
 #ALL
 all_words = [verb_go, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, verb_move, verb_unlock, word_door, prep_from, prep_of, prep_with, articles, item_dict, word_all]
 
