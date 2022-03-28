@@ -30,10 +30,8 @@ class Room():
             raise ValueError     
     def take_all(self, location):
         if self.contents != []:
-            return_list = []
-            for item in self.contents:
-                location.append(item)
-                return_list.append(item)
+            return_list = self.contents.copy()
+            location.extend(self.contents)
             self.contents.clear()
             return return_list
         else:
