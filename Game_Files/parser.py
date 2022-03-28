@@ -7,7 +7,7 @@ from playerchar import *
 ###############
 
 #ALL
-all_words = [verb_go, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_eat, verb_break, verb_move, verb_unlock, word_door, prep_from, prep_of, prep_with, articles, item_dict, word_all]
+all_words = [verb_go, directions, directions_short, verb_inventory, verb_look, verb_examine, word_self, cmd_quit, cmd_help, verb_take, verb_drop, verb_put, verb_eat, verb_break, verb_move, verb_unlock, word_door, prep_from, prep_of, prep_with, prep_in, articles, item_dict, word_all]
 
 #Checks whether all words are in vocabulary
 def check(command):
@@ -173,6 +173,36 @@ def parse(command):
                 drop(command[1])
         else:
             print("I understood as far as you wanting to drop something.")
+    #PUT
+    elif command[0] in verb_put:
+        def put_in(item, container):
+            try:
+                if item_dict[container] in get_room(player.x, player.y).contents or item_dict[container] in player.contents:
+                    if isinstance(item_dict[container], Container):
+                        if item_dict[item] != item_dict[container]:
+                            player.drop(item_dict[item], item_dict[container].contents)
+                            print(f"You put the {item} in the {container}.")
+                        else:
+                            print(f"You can't put the {item} inside itself!")
+                    else:
+                        print("That isn't a container.")
+                else:
+                    print(f"You don't see a {container} here.")
+            except:
+                print("You don't have that.")
+        if len(command) == 1:
+            print(f"What do you want to put somehwere?")
+        elif len(command) == 2:
+            print(f"Where do you want to put the {command[1]}?")
+        elif len(command) == 3:
+            put_in(command[1], command[2])
+        elif len(command) == 4:
+            if command[2] in prep_in:
+                put_in(command[1], command[3])
+            else:
+                pass
+        else:
+            print("I understood you as far as wanting to put something somewhere.")
     #EAT
     elif command[0] in verb_eat:
         def eat(item):

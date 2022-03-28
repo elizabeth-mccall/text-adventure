@@ -19,9 +19,10 @@ verb_break = ["break", "smash", "shatter"]
 #EXAMINE
 verb_examine = ["x", "examine", "inspect", "investigate", "study", "look at"]
 
-#TAKE/DROP
+#TAKE/DROP/PUT
 verb_take = ["take", "grab"]
 verb_drop = ["drop", "toss"]
+verb_put = ["put"]
 
 #EAT/DRINK
 verb_eat = ["eat", "bite"]
@@ -44,6 +45,7 @@ cmd_quit = ["q", "quit"]
 prep_from = ["from", "out"]
 prep_of = ["of"]
 prep_with = ["with"]
+prep_in = ["in", "into"]
 
 #ARTICLES
 articles = ["a", "an", "the"]
