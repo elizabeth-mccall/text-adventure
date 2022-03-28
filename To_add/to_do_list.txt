@@ -1,22 +1,16 @@
 To do: 
 
-1. Add help menu
-
-2. Add "put" (item) "in" (container)
-
-3. Add "visible"/"invisible" attribute? Or, for containers, see-through or not see-through?
+1. Add "visible"/"invisible" attribute? Or, for containers, see-through or not see-through?
     -- If an item is inside a container that's locked, you can't see items inside
     -- If something is covering(??) something else, you can't see what's underneath(??)
         -- adding "move" verb would conflict with current move function, so you'd need to figure that out
 
-4. Improve the whats_inside function
+2. Improve the whats_inside function
 
-5. Consider adding locked/unlocked doors??
+3. Improve code for unlocking doors (it's so bad rn)
 
-6. Add drinking?
+4. Add drinking?
     -- Currently bottle == container, meaning would have to check for if container's contents are drinkable first?
-
-7. separate parser file into appropriate # of game files
 
 For the future (aka complicated):
 #. Add money/trade?
