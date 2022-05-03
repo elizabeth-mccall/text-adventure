@@ -61,13 +61,15 @@ sword = Thing(name="glowing sword", description="A glowing sword.")
 branch = Thing(name="branch", description="A tree branch.")
 jar = Container(name = "jar", description="An empty jar", contents = [], breakable = True)
 bottle = Container(name = "bottle", description="A small glass bottle", contents = ["bit of water"])
-basket = Container(name= "basket", description="A woven basket", contents = [jar, bottle, "knife"])
+knife = Thing(name="knife", description="A dull knife.")
+basket = Container(name= "basket", description="A woven basket", contents = [jar, bottle, knife])
 
 item_dict = {
     "key": key,
     "rug": rug,
     "sword": sword,
     "branch": branch,
+    "knife": knife,
     "basket": basket,
     "jar": jar,
     "bottle": bottle,

@@ -24,7 +24,7 @@ class Room():
         if item in self.contents:
             self.contents.remove(item)
             location.append(item)
-        elif item in self.furniture:
+        elif hasattr(self, "furniture") and item in self.furniture:
             raise AttributeError
         else:
             raise ValueError     
